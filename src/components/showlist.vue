@@ -32,6 +32,7 @@ export default {
     itemcheck: function () {
       this.item.checked = !this.item.checked
       this.$parent.calctotalmoney()
+      this.$parent.ifcheckallclick()
     },
     nump: function () {
       this.item.count++

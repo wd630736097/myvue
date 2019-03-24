@@ -24,7 +24,7 @@
         </ul>
       </div>
       <div class = 'tablebottom'>
-        <input class = 'checkbox' type = 'checkbox' :checked = 'checkall' @click = 'ifcheckall () , calctotalmoney ()'>
+        <input class = 'checkbox' type = 'checkbox' :checked = 'checkall' @click = 'ifcheckall ()'>
         <div class = 'selectAll' @click = 'mcheckall ()'>全选</div>
         <div class = 'noselectAll' @click = 'mnocheckall()'>取消全选</div>
         <div class = 'sumPrice'>{{totalmoney}}</div>
@@ -107,11 +107,11 @@ export default {
     }
   },
   methods: {
-    ifcheckall: function () {
+    ifcheckall () {
       this.checkall = !this.checkall
       this.list.forEach((item) => {
         item.checked = this.checkall
-        console.log(this.checkall)
+        this.calctotalmoney()
       })
       // if (this.checkall) {
       //   this.list.forEach(function (item, checkall) {
@@ -126,26 +126,38 @@ export default {
     },
     mcheckall: function () {
       this.checkall = true
-      this.list.forEach(function (item) {
+      this.list.forEach((item) => {
         item.checked = true
       })
       this.calctotalmoney()
     },
     mnocheckall: function () {
       this.checkall = false
-      this.list.forEach(function (item) {
+      this.list.forEach((item) => {
         item.checked = false
       })
       this.calctotalmoney()
     },
     calctotalmoney: function () {
-      var _this = this
-      _this.totalmoney = 0
-      this.list.forEach(function (item) {
+      this.totalmoney = 0
+      this.list.forEach((item) => {
         if (item.checked) {
-          _this.totalmoney += item.count * item.price
+          this.totalmoney += item.count * item.price
         }
       })
+    },
+    ifcheckallclick () {
+      let i = 0
+      this.list.forEach((item) => {
+        if (item.checked) {
+          i++
+        }
+      })
+      if (i === this.list.length) {
+        this.checkall = true
+      } else if (i !== this.list.length) {
+        this.checkall = false
+      }
     }
   }
 }
