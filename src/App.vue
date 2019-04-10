@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = 'overall'>
     <div>
       <span class = 'spanline'></span>
       <h1>购物车</h1>
@@ -12,13 +12,20 @@
         <p class = 'thp'>总金额</p>
         <p class = 'thp'>编辑</p>
       </div>
+      <popUp
+        v-show = 'popShow'
+      >
+      </popUp>
       <div>
         <ul>
           <listshow
-          v-for= '(item,index) of list' :key = index
+          v-for= '(item,index) of list'
+          :key = 'index'
+          :index = 'index'
           :item = 'item'
           :list = 'list'
           :msg = 'msg'
+          @hello = 'popYShow'
           >
           </listshow>
         </ul>
@@ -38,75 +45,109 @@
 
 <script>
 import showlist from './components/showlist'
+import popUp from './components/popUp'
+import axios from 'axios'
 export default {
   components: {
-    'listshow': showlist
+    'listshow': showlist,
+    'popUp': popUp
   },
   data () {
     return {
+      currentId: 0,
+      popShow: false,
       msg: 'helloworld',
       checkall: false,
       item: '',
       totalmoney: 0,
-      list: [
-        {
-          'name': '面具1',
-          'checked': false,
-          'price': 19,
-          'count': 1,
-          'amount': 19,
-          'imgPic': '../static/img/test1.jpg',
-          'gifts': [
-            {
-              'partId': '10001',
-              'partName': '火'
-            },
-            {
-              'partId': '10002',
-              'partName': '火柴'
-            }
-          ]
-        },
-        {
-          'name': '面具2',
-          'checked': false,
-          'price': 20,
-          'count': 1,
-          'amount': 20,
-          'imgPic': '../static/img/test.jpg',
-          'gifts': [
-            {
-              'partId': '10001',
-              'partName': '打'
-            },
-            {
-              'partId': '10002',
-              'partName': '火柴盒'
-            }
-          ]
-        },
-        {
-          'name': '面具3',
-          'checked': false,
-          'price': 21,
-          'count': 1,
-          'amount': 20,
-          'imgPic': '../static/img/goods-1.jpg',
-          'gifts': [
-            {
-              'partId': '10001',
-              'partName': '机'
-            },
-            {
-              'partId': '10002',
-              'partName': '火柴盒'
-            }
-          ]
-        }
-      ]
+      list: []
+      // list: [
+      //   {
+      //     'name': '面具1',
+      //     'checked': false,
+      //     'show': true,
+      //     'price': 19,
+      //     'count': 1,
+      //     'amount': 19,
+      //     'imgPic': '../static/img/test1.jpg',
+      //     'gifts': [
+      //       {
+      //         'partId': '10001',
+      //         'partName': '火'
+      //       },
+      //       {
+      //         'partId': '10002',
+      //         'partName': '火柴'
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     'name': '面具2',
+      //     'checked': false,
+      //     'show': true,
+      //     'price': 20,
+      //     'count': 1,
+      //     'amount': 20,
+      //     'imgPic': '../static/img/test.jpg',
+      //     'gifts': [
+      //       {
+      //         'partId': '10001',
+      //         'partName': '打'
+      //       },
+      //       {
+      //         'partId': '10002',
+      //         'partName': '火柴盒'
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     'name': '面具3',
+      //     'checked': false,
+      //     'show': true,
+      //     'price': 21,
+      //     'count': 1,
+      //     'amount': 20,
+      //     'imgPic': '../static/img/goods-1.jpg',
+      //     'gifts': [
+      //       {
+      //         'partId': '10001',
+      //         'partName': '机'
+      //       },
+      //       {
+      //         'partId': '10002',
+      //         'partName': '火柴盒'
+      //       }
+      //     ]
+      //   }
+      // ]
     }
   },
+  mounted () {
+    axios.get('/getGoodsList', {
+      baseURL: 'https://www.easy-mock.com/mock/5ca0c1fb2c920e72b3fa50cc/shopCar',
+      params: {
+        id: 0
+      }
+    }).then((abc) => {
+      // console.log(abc.data.data)
+      this.list = abc.data.data || []
+    })
+  },
   methods: {
+    popYShow (index) {
+      this.popShow = true
+      this.currentId = index
+    },
+    popNoShow () {
+      this.popShow = false
+    },
+    delete () {
+      // console.log(this.currentId)
+      this.list[this.currentId].show = false
+      this.list[this.currentId].checked = false
+      this.calctotalmoney()
+      this.popShow = false
+    },
     ifcheckall () {
       this.checkall = !this.checkall
       this.list.forEach((item) => {
@@ -169,19 +210,25 @@ export default {
   margin:0px;
   padding: 0px;
 }
+.overall {
+  position: relative
+}
 #app {
 
 }
 h1 {
+  position: absolute;
+  left: 50%;
   padding: 20px 20px;
   color: #605f5f;
   text-align: center;
-  z-index: 10;
+  z-index: 3;
   background-color: white;
 }
 .spanline {
   width: 1200px;
   position: absolute;
+  z-index: 2;
   left: 50%;
   top: 40px;
   margin-left: -600px;

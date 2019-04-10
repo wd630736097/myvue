@@ -1,19 +1,19 @@
 <template>
-<div class = 'tobuy'>
+<div class = 'tobuy' v-show = item.show>
   <li>
     <input class = 'select' type = 'radio' :checked = item.checked @click = 'itemcheck'>
     <img :src = 'item.imgPic' class = 'itemimg'>
     <div class = 'itemname'>{{item.name}}</div>
     <div class = 'free'>
     赠品:
-    <p>{{item.gifts[0].partName}}</p>
+    <p>{{item.gifts[0].partName}}{{this.index}}</p>
     </div>
     <div class = 'price'>{{item.price}}</div>
     <button class = 'buttonm' @click = 'numm'>-</button>
     <input class = 'number' v-model = item.count>
     <button class = 'buttonp' @click = 'nump'>+</button>
     <div class = 'sum' >{{item.count * item.price}}</div>
-    <img :src = 'deleteicon' class = 'dicon'>
+    <img :src = 'deleteicon' class = 'dicon' @click = 'deleteitem'>
   </li>
 </div>
 </template>
@@ -45,6 +45,16 @@ export default {
       } else {
         this.item.count = 1
       }
+    },
+    deleteitem: function () {
+      this.$emit('hello', this.index)
+      // let a = confirm('是否删除该产品')
+      // if (a === true) {
+      //   this.item.show = false
+      //   this.item.checked = false
+      //   this.$parent.calctotalmoney()
+      //   console.log(this.item.show)
+      // }
     }
   }
 }
@@ -122,7 +132,7 @@ li {
 .sum {
     position: relative;
     top: -140px;
-    left: 910px;
+    left: 930px;
     color: #ee4433
 }
 .dicon {
